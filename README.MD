@@ -1,31 +1,30 @@
-
-# Robosense to Velodyne点云格式转换器
+# Robosense to Velodyne Point Cloud Format Converter
 
 [![ROS2](https://img.shields.io/badge/build-passing-brightgreen)](https://docs.ros.org/en/humble/Installation.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
-本工程提供将Robosense激光雷达点云数据转换为Velodyne兼容格式的功能，支持多种输出格式（XYZI/XYZIR/XYZIRT），适用于需要与Velodyne兼容算法栈集成的场景。
+This project provides functionality to convert Robosense LiDAR point cloud data into Velodyne-compatible formats. It supports multiple output formats (XYZI / XYZIR / XYZIRT) and is designed for integration with Velodyne-based algorithm stacks.
 
-## 功能特性
+## Features
 
-- ✅ 支持RSLiDAR原始数据格式转换
-- 🔄 支持16线和128线雷达型号
-- 📦 提供ROS2节点接口
-- ⏱️ 保留时间戳和ring通道信息
-- 🚀 实时高效转换（支持>100,000点/秒）
+- ✅ Supports RSLiDAR raw data conversion
+- 🔄 Compatible with 16-line and 128-line LiDAR models
+- 📦 Provides a ROS2 node interface
+- ⏱️ Preserves timestamps and ring channel information
+- 🚀 Real-time efficient conversion (>100,000 points/sec)
 
-## 系统要求
+## System Requirements
 
-- **操作系统**: Ubuntu 22.04
-- **ROS版本**: ROS2 Humble Hawksbill
-- **依赖库**:
+- **Operating System:** Ubuntu 22.04
+- **ROS Version:** ROS2 Humble Hawksbill
+- **Dependencies:**
   - PCL 1.12
   - Eigen3 3.4
   - Boost 1.74
 
-## 安装指南
+## Installation Guide
 
-### 1. 安装依赖
+### 1. Install Dependencies
 ```bash
 sudo apt-get install ros-humble-pcl-conversions \
 ros-humble-sensor-msgs \
@@ -33,94 +32,94 @@ libpcl-dev \
 libeigen3-dev
 ```
 
-### 2. 创建工作空间
+### 2. Create Workspace
 ```bash
 mkdir -p ~/rs_converter_ws/src
 cd ~/rs_converter_ws/src
 git clone https://github.com/your-repository/rs_converter.git
 ```
 
-### 3. 编译工程
+### 3. Build the Project
 ```bash
 cd ~/rs_converter_ws
 rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
 ```
 
-## 使用方法
+## Usage
 
-### 快速启动
+### Quick Start
 ```bash
 source install/setup.bash
 ros2 launch rs_converter rs_converter.launch.py
 ```
 
-### 参数说明
-| 参数 | 可选值 | 默认值 | 说明 |
-|------|--------|--------|------|
-| 输入类型 | XYZI/XYZIRT | XYZIRT | Robosense点云格式 |
-| 输出类型 | XYZI/XYZIR/XYZIRT | XYZIRT | 目标Velodyne格式 |
+### Parameters
+| Parameter | Options | Default | Description |
+|------------|----------|----------|--------------|
+| Input Type | XYZI / XYZIRT | XYZIRT | Robosense point cloud format |
+| Output Type | XYZI / XYZIR / XYZIRT | XYZIRT | Target Velodyne-compatible format |
 
-### 手动运行
+### Manual Execution
 ```bash
-# XYZIRT转XYZIRT模式
+# XYZIRT to XYZIRT mode
 ros2 run rs_converter rs_converter XYZIRT XYZIRT
 
-# XYZI转XYZIR模式
+# XYZI to XYZIR mode
 ros2 run rs_converter rs_converter XYZI XYZIR
 ```
 
-## 验证测试
+## Validation and Testing
 
-1. 启动数据采集
+1. **Start Data Playback**
 ```bash
 ros2 bag play your_robosense_data.bag
 ```
 
-2. 查看输出话题
+2. **Check Output Topic**
 ```bash
 ros2 topic echo /velodyne_points --no-arr
 ```
 
-3. 可视化验证（需安装RViz2）
+3. **Visualize in RViz2** (ensure RViz2 is installed)
 ```bash
 ros2 run rviz2 rviz2 -d src/rs_converter/config/visualization.rviz
 ```
 
-## 常见问题
+## Troubleshooting
 
-### Q1: 出现"undefined reference to pcl::PCLBase"编译错误
-➔ 确保已正确安装PCL库并配置环境变量：
+### Q1: "undefined reference to pcl::PCLBase" Compilation Error
+**Solution:** Ensure PCL is properly installed and environment variables are configured.
 ```bash
 export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 ```
 
-### Q2: 无点云数据输出
-➔ 检查输入话题是否正确：
+### Q2: No Point Cloud Output
+**Solution:** Check if the input topic name is correct.
 ```bash
 ros2 topic list | grep rslidar
 ```
 
-### Q3: 时间戳异常
-➔ 校准传感器时间同步，建议使用PTP协议：
+### Q3: Timestamp Issues
+**Solution:** Calibrate sensor time synchronization. PTP protocol is recommended.
 ```bash
 sudo ptpd -i eth0 -M
 ```
 
-## 性能指标
+## Performance Metrics
 
-| 指标 | 数值 |
-|------|------|
-| 单帧处理时间（128线） | ≤2.5ms |
-| CPU占用率（100Hz输入） | ≤3.2% |
-| 内存占用 | 45MB |
+| Metric | Value |
+|---------|--------|
+| Frame Processing Time (128-line) | ≤2.5ms |
+| CPU Usage (100Hz Input) | ≤3.2% |
+| Memory Usage | 45MB |
 
-## 许可证
+## License
 
-本项目采用Apache License 2.0开放授权，详情参见[LICENSE](LICENSE)文件。
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-**技术支持**：请联系 support@lidar-converter.com  
-**版本更新**：2023-12-20 v1.2.1  
-**兼容硬件**：Robosense M1/M2, Ruby 128线, Velodyne VLP-16/32
+**Technical Support:** support@lidar-converter.com  
+**Version Update:** 2023-12-20 v1.2.1  
+**Compatible Hardware:** Robosense M1/M2, Ruby 128-line, Velodyne VLP-16/32
